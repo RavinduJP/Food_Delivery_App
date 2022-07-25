@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/app_column.dart';
 import 'package:food_delivery_app/common/app_icon.dart';
 import 'package:food_delivery_app/common/expandable_text_widget.dart';
+import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/pages/home/main_food_page.dart';
+import 'package:food_delivery_app/utils/app_constants.dart';
 import 'package:get/get.dart';
 
 import '../../common/big_text.dart';
@@ -12,10 +14,15 @@ import '../../utils/colors.dart';
 import '../../utils/dimensions.dart';
 
 class PopularFoodDetail extends StatelessWidget {
-  const PopularFoodDetail({Key? key}) : super(key: key);
+  final int pageId;
+  const PopularFoodDetail({Key? key, required this.pageId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var product = Get.find<PopularProductController>().popularProductList[pageId];
+    // print("page is id " + pageId.toString());
+    // print("product name is " + product.name.toString());
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -30,8 +37,8 @@ class PopularFoodDetail extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage(
-                    "assets/images/chineseFood.jpg",
+                  image: NetworkImage(
+                    AppConstants.BASE_URL + AppConstants.UPLOAD_URL + product.img!,
                   ),
                 ),
               ),
@@ -76,7 +83,7 @@ class PopularFoodDetail extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppColumn(
-                    text: "Chinese side",
+                    text: product.name!,
                   ),
                   SizedBox(
                     height: Dimensions.height10,
@@ -89,7 +96,8 @@ class PopularFoodDetail extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: ExpandableTextWidget(
                           text:
-                              "Biryani is a mixed rice dish originating among the royal khansamas of the durbar of Old Delhi, under the Mughal Empire, during the late 16th century of the then Mughal Court. It is made with Indian spices, rice, and usually some type of meat (chicken, beef, goat, lamb, prawn, fish) or in some cases without any meat, and sometimes, in addition, eggs and potatoes. Biryani is one of the most popular dishes in South Asia, as well as among the diaspora from the region. Similar dishes are also prepared in other parts of the world such as in Iraq, Thailand, Singapore and Malaysia. Biryani is the single most-ordered dish on Indian online food ordering and delivery services."),
+                          product.description!,
+                      ),
                     ),
                   ),
                 ],
@@ -153,7 +161,7 @@ class PopularFoodDetail extends StatelessWidget {
                   left: Dimensions.width10,
                   right: Dimensions.width10),
               child: BigText(
-                text: "\$10 | Add to cart",
+                text: "\$ ${product.price!} | Add to cart",
                 color: Colors.white,
               ),
               decoration: BoxDecoration(
